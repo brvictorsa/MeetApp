@@ -17,6 +17,11 @@ class UserController {
     // informa que o usuário foi cadastrado
     return res.json({ id, name, email, message: 'Usuário cadastrado' });
   }
+
+  async update(req, res) {
+    console.log(req.userId);
+    return res.json({ ok: true });
+  }
 }
 
 export default new UserController();

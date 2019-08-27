@@ -22,6 +22,22 @@ class UserController {
     console.log(req.userId);
     return res.json({ ok: true });
   }
+
+  async index(req, res) {
+    // recupera os usuários e faz a contagem
+    const { count, rows } = await User.findAndCountAll({
+      attributes: ['id', 'name', 'email'],
+    });
+
+    if (count < 1) {
+      return res.json({ message: 'Nenhum usuário cadastrado' });
+    }
+
+    return res.json({
+      total: count,
+      users: rows,
+    });
+  }
 }
 
 export default new UserController();

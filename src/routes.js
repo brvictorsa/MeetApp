@@ -12,7 +12,7 @@ routes.post('/users', UserController.store);
 
 // middleware global
 routes.use(authMiddleware);
-
+routes.get('/users', UserController.index);
 routes.put('/users', UserController.update);
 
 export default routes;

@@ -11,8 +11,8 @@ routes.post('/sessions', SessionController.store);
 routes.post('/users', UserController.store);
 
 // middleware global
-routes.use(authMiddleware);
-routes.get('/users', UserController.index);
-routes.put('/users', UserController.update);
+// routes.use(authMiddleware);
+routes.get('/users', authMiddleware, UserController.index);
+routes.put('/users', authMiddleware, UserController.update);
 
 export default routes;

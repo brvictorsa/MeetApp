@@ -1,4 +1,4 @@
-// deve utilizar sintaxe do commonjs
+// deve utilizar sintaxe do commonjs (sem import/export)
 module.exports = {
   dialect: 'postgres',
   host: 'localhost',

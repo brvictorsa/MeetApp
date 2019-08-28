@@ -1,5 +1,5 @@
-// imports the app
+// importa a aplicação
 import app from './app';
 
-// set ups listener port
+// configura a porta
 app.listen(3333);

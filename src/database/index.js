@@ -13,6 +13,7 @@ class Database {
     // cria a conexão
     this.connection = new Sequelize(databaseConfig);
 
+    // repassa o dabate para o init de cada modelo
     models.map(model => model.init(this.connection));
   }
 }

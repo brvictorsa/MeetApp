@@ -1,4 +1,5 @@
 import express from 'express';
+import { resolve } from 'path';
 import routes from './routes';
 
 // importa o banco de dados
@@ -13,6 +14,10 @@ class App {
 
   middlewares() {
     this.server.use(express.json());
+    this.server.use(
+      '/files',
+      express.static(resolve(__dirname, '..', 'temp', 'uploads'))
+    );
   }
 
   routes() {

@@ -18,8 +18,9 @@ routes.post('/users', UserController.store);
 
 // routes.use(authMiddleware); // middleware global: rotas após exigem autenticação
 
-routes.get('/users', authMiddleware, UserController.index);
-routes.put('/users', authMiddleware, UserController.update);
+routes
+  .get('/users', authMiddleware, UserController.index)
+  .put('/users', authMiddleware, UserController.update);
 
 routes.post(
   '/files',
@@ -30,6 +31,7 @@ routes.post(
 
 routes
   .get('/meetups', authMiddleware, MeetupController.index)
-  .post('/meetups', authMiddleware, MeetupController.store);
+  .post('/meetups', authMiddleware, MeetupController.store)
+  .put('/meetups/:id', authMiddleware, MeetupController.update);
 
 export default routes;

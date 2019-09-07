@@ -1,10 +1,33 @@
 import * as Yup from 'yup';
-import { isBefore, parseISO, startOfHour } from 'date-fns';
+import { Op } from 'sequelize';
+import {
+  isBefore,
+  parseISO,
+  startOfHour,
+  startOfDay,
+  endOfDay,
+} from 'date-fns';
+
 import Meetup from '../models/Meetup';
+import User from '../models/User';
 
 class MeetupController {
   async index(req, res) {
-    const meetups = await Meetup.findAll();
+    const { date, page = 1 } = req.query;
+    const parsedDate = parseISO(date);
+
+    const meetups = await Meetup.findAll({
+      attributes: ['id', 'title', 'description', 'location', 'date'],
+      where: {
+        date: { [Op.between]: [startOfDay(parsedDate), endOfDay(parsedDate)] },
+      },
+      order: ['date'],
+      limit: 10,
+      offset: (page - 1) * 10,
+      include: [
+        { model: User, as: 'organizer', attributes: ['id', 'name', 'email'] },
+      ],
+    });
 
     /*
      * Valida se existem meetups cadastrados.
@@ -12,10 +35,10 @@ class MeetupController {
     if (!meetups.length) {
       return res
         .status(200)
-        .json({ message: 'Não existem meetups cadastrados.' });
+        .json({ message: 'Não foram encontrados meetups.' });
     }
 
-    return res.json({ message: 'MeetupController:index foi chamado' });
+    return res.json(meetups);
   }
 
   async store(req, res) {

@@ -16,22 +16,15 @@ const upload = multer(multerConfig);
 routes.post('/sessions', SessionController.store);
 routes.post('/users', UserController.store);
 
-// routes.use(authMiddleware); // middleware global: rotas após exigem autenticação
+routes.use(authMiddleware); // middleware global: rotas após exigem autenticação
+
+routes.get('/users', UserController.index).put('/users', UserController.update);
+
+routes.post('/files', upload.single('file'), FileController.store);
 
 routes
-  .get('/users', authMiddleware, UserController.index)
-  .put('/users', authMiddleware, UserController.update);
-
-routes.post(
-  '/files',
-  authMiddleware,
-  upload.single('file'),
-  FileController.store
-);
-
-routes
-  .get('/meetups', authMiddleware, MeetupController.index)
-  .post('/meetups', authMiddleware, MeetupController.store)
-  .put('/meetups/:id', authMiddleware, MeetupController.update);
+  .get('/meetups', MeetupController.index)
+  .post('/meetups', MeetupController.store)
+  .put('/meetups/:id', MeetupController.update);
 
 export default routes;

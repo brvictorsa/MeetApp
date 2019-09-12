@@ -138,6 +138,41 @@ class MeetupController {
 
     return res.json(meetup);
   }
+
+  async delete(req, res) {
+    const user_id = req.userId;
+    const meetupToDelete = await Meetup.findByPk(req.params.id);
+    const { title } = meetupToDelete;
+
+    if (!meetupToDelete) {
+      return res.status(400).json({ error: 'Meetup não encontrado.' });
+    }
+
+    /*
+     * Valida se o usuário é o organizador do meetup.
+     */
+    if (meetupToDelete.user_id !== user_id) {
+      return res
+        .status(401)
+        .json({ error: 'Somente o organizador pode cancelar o meetup.' });
+    }
+
+    /**
+     * Verifica a data do meetup.
+     */
+    if (meetupToDelete.past) {
+      return res
+        .status(400)
+        .json({ error: 'Este meetup ja aconteceu e não poder ser cancelado.' });
+    }
+
+    /**
+     * Cancelamento do meetup.
+     */
+    await meetupToDelete.destroy();
+
+    return res.json({ message: `O meetup '${title}' acaba de ser cancelado.` });
+  }
 }
 
 export default new MeetupController();

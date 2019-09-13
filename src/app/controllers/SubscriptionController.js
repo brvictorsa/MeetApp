@@ -1,18 +1,20 @@
+import { format } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 import Subscription from '../models/Subscription';
 import User from '../models/User';
 import Meetup from '../models/Meetup';
 
+import Mail from '../../lib/Mail';
+
 class SubscriptionController {
   async store(req, res) {
-    console.log(req.userId);
-    console.log(req.params.meetupId);
-
     const user = await User.findByPk(req.userId);
     const meetup = await Meetup.findByPk(req.params.meetupId, {
       include: [
         {
           model: User,
           as: 'organizer',
+          attributes: ['name', 'email'],
         },
       ],
     });
@@ -61,6 +63,25 @@ class SubscriptionController {
     const subscription = await Subscription.create({
       user_id: user.id,
       meetup_id: meetup.id,
+    });
+
+    /**
+     * Envia um e-mail para o organizador relatando a inscrição do usuário no meetup.
+     */
+    await Mail.sendMail({
+      to: `${meetup.organizer.name} <${meetup.organizer.email}>`,
+      subject: `Inscrição no Meetup`,
+      // text: `Foi feita uma inscrição no meetup ${meetup.title}. Participante: ${user.name}`,
+      template: 'subscription',
+      context: {
+        organizer: meetup.organizer.name,
+        meetup: meetup.title,
+        date: format(meetup.date, "'dia' dd 'de' MMMM', às' H:mm'h'", {
+          locale: pt,
+        }),
+        participant: user.name,
+        contact: user.email,
+      },
     });
 
     return res.json(subscription);

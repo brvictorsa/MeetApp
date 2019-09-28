@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
+import swaggerUI from 'swagger-ui-express';
 import multerConfig from './config/multer';
 
 import UserController from './app/controllers/UserController';
@@ -11,12 +12,18 @@ import SubscriptionController from './app/controllers/SubscriptionController';
 
 import authMiddleware from './app/middlewares/auth';
 
+import swaggerDocument from './swagger.json';
+
 const routes = new Router();
 const upload = multer(multerConfig);
 
 // rotas
 routes.post('/sessions', SessionController.store);
 routes.post('/users', UserController.store);
+
+// swagger API
+routes.use('/api-docs', swaggerUI.serve);
+routes.get('/api-docs', swaggerUI.setup(swaggerDocument));
 
 routes.use(authMiddleware); // middleware global: rotas após exigem autenticação
 

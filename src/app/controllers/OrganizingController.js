@@ -20,7 +20,7 @@ class OrganizingController {
     });
 
     if (!meetups.length) {
-      return res.status(200).json({
+      return res.status(206).json({
         message: `Não foram encontrados meetups organizados pelo usuário ${user.name}`,
       });
     }

@@ -32,7 +32,9 @@ class UserController {
     const { id, name, email } = await User.create(req.body);
 
     // informa que o usuário foi cadastrado
-    return res.json({ id, name, email, message: 'Usuário cadastrado' });
+    return res
+      .status(201)
+      .json({ id, name, email, message: 'Usuário cadastrado' });
   }
 
   async update(req, res) {
